@@ -10,8 +10,7 @@ This model describes the expected format for creating or updating transaction da
     "date": "string (ISO 8601 format, required)",
     "type": "string ('income' or 'expense', required)",
     "category": "string (required)",
-    "description": "string (optional)",
-    "tags": "array of strings (optional)"
+    "description": "string (optional)"
 }
 ```
 ## Transaction Response DTO Model (JSON)
@@ -25,7 +24,6 @@ This model describes the structure of the transaction data returned by the API.
     "date": "string (ISO 8601 format)",
     "type": "string ('income' or 'expense')",
     "category": "string",
-    "description": "string",
-    "tags": "array of strings"
+    "description": "string"
 }
 ```
