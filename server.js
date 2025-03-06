@@ -31,7 +31,6 @@ app.get('/api/transactions', async function (req, res) {
         console.error('Error getting transactions: ', error);
         res.status(500).send({ message: 'Internal server error' });
     }
-
 });
 
 app.post('/api/transactions', async function (req, res) {
@@ -91,7 +90,6 @@ app.delete('/api/transactions/:id', async function (req, res) {
         console.error('Error deleting transaction by id: ', error);
         res.status(500).send({ message: 'Internal server error' });
     }
-
 });
 
 app.patch('/api/transactions/:id', async function (req, res) {
@@ -122,7 +120,62 @@ app.patch('/api/transactions/:id', async function (req, res) {
         console.error('Error updating transaction by id: ', error);
         res.status(500).send({ message: 'Internal server error' });
     }
+});
 
+app.get('/api/statistics/transactions', async function (req, res) {
+    try {
+        const collection = await getDbCollection('mongodb://127.0.0.1', 'transactions_app', 'transactions');
+        const transactions = await collection.find({}).toArray();
+
+        const incomeTransactions = transactions.filter(transaction => transaction.type === 'income');
+        const expenseTransactions = transactions.filter(transaction => transaction.type === 'expense');
+
+        const result = {
+            "income": incomeTransactions,
+            "expense": expenseTransactions
+        };
+
+        res.send(result);
+    } catch (error) {
+        console.error('Error getting transactions: ', error);
+        res.status(500).send({ message: 'Internal server error' });
+    }
+});
+
+app.get('/api/statistics/categories', async function (req, res) {
+    try {
+        const collection = await getDbCollection('mongodb://127.0.0.1', 'transactions_app', 'transactions');
+        const transactions = await collection.find({}).toArray();
+
+        const incomeTransactions = transactions.filter(transaction => transaction.type === 'income');
+        const expenseTransactions = transactions.filter(transaction => transaction.type === 'expense');
+
+        const groupTransactionsByCategory = (transactions) => {
+            const categoryMap = {};
+            transactions.forEach(transaction => {
+                const category = transaction.category;
+                if (!categoryMap[category]) {
+                    categoryMap[category] = [];
+                }
+                categoryMap[category].push(transaction);
+            });
+
+            return categoryMap;
+        };
+
+        const incomeCategories = groupTransactionsByCategory(incomeTransactions);
+        const expenseCategories = groupTransactionsByCategory(expenseTransactions);
+
+        const result = {
+            "income": incomeCategories,
+            "expense": expenseCategories
+        };
+
+        res.send(result);
+    } catch (error) {
+        console.error('Error getting transactions: ', error);
+        res.status(500).send({ message: 'Internal server error' });
+    }
 });
 
 
