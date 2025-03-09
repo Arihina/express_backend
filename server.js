@@ -43,7 +43,7 @@ app.post('/api/transactions', async function (req, res) {
 
         await collection.insertOne(transaction);
 
-        res.status(201).send();
+        res.status(201).send({});
     } catch (error) {
         console.error('Error adding transactions: ', error);
         res.status(500).send({ message: 'Internal server error' });
@@ -81,7 +81,7 @@ app.delete('/api/transactions/:id', async function (req, res) {
             return res.status(404).send({ message: 'Transaction not found' });
         }
 
-        res.status(204).send();
+        res.status(204).send({});
     } catch (error) {
         if (error.name === 'CastError') {
             return res.status(400).send({ message: 'Invalid transaction id' });
@@ -111,7 +111,7 @@ app.patch('/api/transactions/:id', async function (req, res) {
             return res.status(404).send({ message: 'Transaction not found' });
         }
 
-        res.status(200).send();
+        res.status(200).send({});
     } catch (error) {
         if (error.name === 'CastError') {
             return res.status(400).send({ message: 'Invalid transaction id' });
